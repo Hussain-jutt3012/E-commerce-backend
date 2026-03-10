@@ -1,6 +1,14 @@
 import { Router } from "express";
 import { verifyJWT } from "../middleware/auth.middleware.js";
-import { allProductFetch, productcreate, Productdelete, productUpdate } from "../controllers/Product.controller.js";
+import {
+    allProductFetch,
+    productcreate,
+    Productdelete,
+    productUpdate,
+    menproductFetch,
+    womenProductFetch,
+    kidsProductFetch,
+} from "../controllers/Product.controller.js";
 import { upload } from "../middleware/multer.middleware.js";
 
 
@@ -31,7 +39,11 @@ router.route("/:sellerId/:productId/product-update").put(verifyJWT,
     productUpdate
 )
 
-router.route("/:sellerId/:productId/product-delete").delete(verifyJWT,Productdelete)
+router.route("/:sellerId/:productId/product-delete").delete(verifyJWT, Productdelete)
 router.route("/allproductfetch").get(allProductFetch)
+router.route("/mens-product").get(menproductFetch)
+router.route("/womens-product").get(womenProductFetch)
+router.route("/kids-product").get(kidsProductFetch)
+
 
 export default router

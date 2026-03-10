@@ -209,7 +209,7 @@ const productUpdate = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Product is not update")
     }
 
-    return res.status(200).json(200, new ApiResponse("Product Update Sucessfully",Productupdtae))
+    return res.status(200).json(200, new ApiResponse("Product Update Sucessfully", Productupdtae))
 
 })
 
@@ -219,13 +219,13 @@ const Productdelete = asyncHandler(async (req, res) => {
 
     const userRequest = await User.findById(sellerId)
 
-    if(userRequest.role !== "seller"){
+    if (userRequest.role !== "seller") {
         throw new ApiError(400, "You have no access for delete the Product")
     }
 
     const isProdudctIdExist = await Product.findById(productId)
 
-    if(!isProdudctIdExist){
+    if (!isProdudctIdExist) {
         throw new ApiError(400, "Product Id is not found")
     }
 
@@ -234,31 +234,31 @@ const Productdelete = asyncHandler(async (req, res) => {
         sellerId: new mongoose.Types.ObjectId(req.user._id)
     })
 
-    if(!ProductownerExist){
+    if (!ProductownerExist) {
         throw new ApiError(400, "You only update your own product")
     }
 
     const productdeleted = await Product.findOneAndDelete(productId)
 
-    if(!productdeleted){
+    if (!productdeleted) {
         throw new ApiError(400, "Product is not deleted")
     }
 
-    return res.status(200).json( new ApiResponse(200, "Product delete Sucessfully", productdeleted))
+    return res.status(200).json(new ApiResponse(200, "Product delete Sucessfully", productdeleted))
 
 })
 
-const allProductFetch = asyncHandler(async(req, res) =>{
+const allProductFetch = asyncHandler(async (req, res) => {
 
-    const productfetch = await  Product.aggregate([
+    const productfetch = await Product.aggregate([
 
         {
             $limit: 50
         },
 
         {
-            $project:{
-                _id:0,
+            $project: {
+                _id: 0,
                 title: 1,
                 description: 1,
                 category: 1,
@@ -270,7 +270,35 @@ const allProductFetch = asyncHandler(async(req, res) =>{
         }
     ])
 
-    return res.status(200).json( new ApiResponse(200, "All Product fetch is SucessFully", productfetch))
+    return res.status(200).json(new ApiResponse(200, "All Product fetch is SucessFully", productfetch))
+
+})
+
+const menproductFetch = asyncHandler(async (req, res) => {
+
+    const mensProduct = await Product.aggregate([
+        {
+            $match: {
+                category: "Men"
+            }
+        },
+
+        {
+            $project: {
+                _id: 0,
+                title: 1,
+                description: 1,
+                category: 1,
+                subCategory: 1,
+                images: 1,
+                basePrice: 1,
+                currency: 1
+            }
+        }
+
+    ])
+
+    return res.status(200).json(new ApiResponse(200, "Mens Product Fetch Sucessfully", mensProduct))
 
 })
 
@@ -278,5 +306,6 @@ export {
     productcreate,
     productUpdate,
     Productdelete,
-    allProductFetch
+    allProductFetch,
+    menproductFetch
 }
