@@ -276,6 +276,8 @@ const allProductFetch = asyncHandler(async (req, res) => {
 
 const menproductFetch = asyncHandler(async (req, res) => {
 
+    const {page = 1, limit = 20, } = req.body
+
     const mensProduct = await Product.aggregate([
         {
             $match: {
@@ -286,7 +288,7 @@ const menproductFetch = asyncHandler(async (req, res) => {
         {
             $project: {
                 _id: 0,
-                title: 1,
+                title: 1, 
                 description: 1,
                 category: 1,
                 subCategory: 1,
@@ -294,9 +296,108 @@ const menproductFetch = asyncHandler(async (req, res) => {
                 basePrice: 1,
                 currency: 1
             }
+        },
+
+        {
+            $skip: (page - 1) * limit
+        },
+
+        {
+            $limit: limit
         }
 
     ])
+
+    if(!menproductFetch.length < 0){
+
+        throw new ApiError(400, "Mens Product is not find")
+    }
+
+    return res.status(200).json(new ApiResponse(200, "Mens Product Fetch Sucessfully", mensProduct))
+
+})
+
+const womenProductFetch = asyncHandler(async (req, res) => {
+
+    const {page = 1, limit = 20, } = req.body
+
+    const womensProduct = await Product.aggregate([
+        {
+            $match: {
+                category: "Womens"
+            }
+        },
+
+        {
+            $project: {
+                _id: 0,
+                title: 1, 
+                description: 1,
+                category: 1,
+                subCategory: 1,
+                images: 1,
+                basePrice: 1,
+                currency: 1
+            }
+        },
+
+        {
+            $skip: (page - 1) * limit
+        },
+
+        {
+            $limit: limit
+        }
+
+    ])
+
+    if(!womensProduct.length < 0){
+
+        throw new ApiError(400, "Womens Product is not find")
+    }
+
+    return res.status(200).json(new ApiResponse(200, "Mens Product Fetch Sucessfully", mensProduct))
+
+})
+
+const kidsProductFetch = asyncHandler(async (req, res) => {
+
+    const {page = 1, limit = 20, } = req.body
+
+    const kidsProduct = await Product.aggregate([
+        {
+            $match: {
+                category: "Kids"
+            }
+        },
+
+        {
+            $project: {
+                _id: 0,
+                title: 1, 
+                description: 1,
+                category: 1,
+                subCategory: 1,
+                images: 1,
+                basePrice: 1,
+                currency: 1
+            }
+        },
+
+        {
+            $skip: (page - 1) * limit
+        },
+
+        {
+            $limit: limit
+        }
+
+    ])
+
+    if(!kidsProduct.length < 0){
+
+        throw new ApiError(400, "Kids Product is not find")
+    }
 
     return res.status(200).json(new ApiResponse(200, "Mens Product Fetch Sucessfully", mensProduct))
 
@@ -307,5 +408,7 @@ export {
     productUpdate,
     Productdelete,
     allProductFetch,
-    menproductFetch
+    menproductFetch,
+    womenProductFetch,
+    kidsProductFetch
 }
